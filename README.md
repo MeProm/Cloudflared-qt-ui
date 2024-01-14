@@ -27,7 +27,7 @@
 * **应该是之前登录配置过，但没有配置好**建议清空%USERPROFILE%\.cloudflared\下所有文件重新登录
 * **报错解决all**
 * ![image](https://github.com/MeProm/Cloudflare-UI-program/assets/105576804/731261a7-4634-4369-ae16-e717b56b525f)
-* 程序使用system执行cmd命令，由于system函数为阻塞函数，主程序可能显示未响应，关闭后面的cmd窗口就行了，**别问我为什么不用QProcess，因为cmd不显示出来，大佬请赐教**
+* 程序使用system执行cmd命令，由于system函数为阻塞函数，主程序可能显示未响应，关闭后面的cmd窗口就行了，**1.0.1版本已解决**
 ## 2.创建隧道
 * 正常执行：![image](https://github.com/MeProm/Cloudflare-UI-program/assets/105576804/cd653441-f833-4786-bfd4-79bb932505ec)
 ## 3.dns代理
