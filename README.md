@@ -1,5 +1,5 @@
 # cloudflare内网穿透 gui
-# Cloudflare-UI-program
+# cloudflare-ui-program
 <div align=center>
   ## cloudflare官方内网穿透exe 使用qt自制的ui界面可以与其快速搭配使用，避免需要记录繁多的命令，所有源码均开源，不会有隐私风险，不得用于商业转载
   ## Using Cloudflare's command line was too cumbersome, and many commands were hard to remember, so I developed this program using qt.
