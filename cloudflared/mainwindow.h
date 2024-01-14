@@ -32,9 +32,9 @@ private slots:
 
     void writeJson(const QString& filePath, QString& a, QString& b);
 
-    bool writeYaml();
+    void writeYaml();
 
-    void on_checkBox_clicked(bool checked);
+    void restartApplication();
 
     void on_res_clicked();
 
@@ -53,6 +53,10 @@ private slots:
     void on_github_download_clicked();
 
     void on_cloud_download_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_del_clicked();
 
 private:
     Ui::MainWindow *ui;

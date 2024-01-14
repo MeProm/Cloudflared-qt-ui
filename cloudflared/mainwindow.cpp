@@ -4,6 +4,8 @@
 #include <QPropertyAnimation>
 #include <QSettings>
 #include <QProcessEnvironment>
+#include <QPixmap>
+#include <QVBoxLayout>
 #include <QApplication>
 #include <QStandardPaths>
 #include <QFile>
@@ -24,12 +26,15 @@
 #include <QNetworkReply>
 #include <QJsonValue>
 #include <QDebug>
+#include <QDesktopServices>
+#include <QUrl>
+
 QString dnsnames;
 QString domains;
-const QString APP_VERSION = "1.0.0";
+const QString APP_VERSION = "1.0.1";
 const QString githubUsername = "MeProm";
 const QString githubRepo = "Cloudflare UI program";
-const QString currentVersion = "1.0.0";
+const QString currentVersion = "1.0.1";
 bool nojson=false;
 QString selectedFileName;
 QString yamlContent = "# Tunnel UUID，就是同目录下的json文件的文件名\n"
@@ -95,14 +100,14 @@ void MainWindow::createJson(const QString& filePath){
         startVibration();
     }
 }
-bool MainWindow::writeYaml()
+void MainWindow::writeYaml()
 {
     QFile file(ui->path->text());
     QString editedContent = ui->yamledit->toPlainText();
     if(editedContent.isEmpty()){
         startVibration();
         QMessageBox::critical(this, "错误", "发生了错误--输入框为空，请点击重置yaml");
-        return false;
+        return;
     }
 
     // 打开文件，以文本写入模式
@@ -154,6 +159,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setMinimumSize(1230, 600);  // 你想要的最小大小
     setMaximumSize(1230, 600);
+        QPixmap originalPixmap(":/new/prefix1/CF_logomark.png");  // 替换为你的图片路径
+    QSize newSize(240,240);  // 设置新的大小
+    QPixmap scaledPixmap = originalPixmap.scaled(newSize);
+
+
+    // 将图片设置到 QLabel 中
+    ui->label_5->setPixmap(scaledPixmap);
     QString folderPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "//.cloudflared//";
 
 
@@ -217,7 +229,6 @@ MainWindow::MainWindow(QWidget *parent)
         // 执行你的逻辑
     } else {
         QMessageBox::information(this, "输入值", "输入无效");
-        startVibration();
     }
     checkForUpdates();
 }
@@ -304,17 +315,29 @@ void MainWindow::on_saveyaml_clicked()
     QString aa=ui->path->text();
     QString bb=ui->TunnelID->text();
     writeJson(QCoreApplication::applicationDirPath() + "/config.json",aa,bb);
-    bool temp = writeYaml();
-    if(!temp){
+    writeYaml();
 
-        return;
+    QStringList arguments;
+    arguments << "/K" << "cloudflared tunnel ingress validate";
+
+    QProcess *myProcess = new QProcess(this);
+    QString program = "cmd.exe";
+    myProcess->setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments *args) {
+        args->startupInfo->dwFlags |= STARTF_USESHOWWINDOW;
+        args->startupInfo->wShowWindow = SW_SHOWNORMAL; // 将窗口显示状态设置为正常大小
+
+        args->flags |= CREATE_NEW_CONSOLE | CREATE_NEW_PROCESS_GROUP;
+        args->startupInfo->dwFlags &= ~STARTF_USESTDHANDLES;
+        args->startupInfo->dwFlags |= STARTF_USEFILLATTRIBUTE;
+        args->startupInfo->dwFillAttribute = BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY;
+    });
+
+    myProcess->start(program, arguments);
+
+    if (!myProcess->waitForStarted()) {
+        QMessageBox::critical(this, "错误-打开cmd", "发生了错误--无法打开cmd");
     }
 
-
-
-    QString command = "cmd /k cloudflared tunnel ingress validate";
-    const char* commandStr = command.toStdString().c_str();
-    system(commandStr);
 
 
 
@@ -326,15 +349,24 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     QSize currentSize = w.size();
-    qDebug() << "Current window size: " << currentSize.width() << "x" << currentSize.height();
+
     return a.exec();
 }
 
-
-void MainWindow::on_checkBox_clicked(bool checked)
+void MainWindow::restartApplication()
 {
-    nojson=true;
+    // 执行重启程序的操作
+
+    // 获取应用程序路径
+    QString applicationPath = QCoreApplication::applicationFilePath();
+
+    // 启动新的进程以重新运行应用程序
+    QProcess::startDetached(applicationPath);
+
+    // 退出当前实例
+    QCoreApplication::quit();
 }
+
 
 
 void MainWindow::on_res_clicked()
@@ -368,11 +400,29 @@ void MainWindow::on_res_clicked()
 
 void MainWindow::on_open_clicked()
 {
+    void on_saveyaml_clicked();
     QString aa=ui->path->text();
     QString bb=ui->TunnelID->text();
-    QString command = "start /min cmd /k cloudflared tunnel --config " + aa + " run " + bb;
-    const char* commandStr = command.toStdString().c_str();
-    system(commandStr);
+    QStringList arguments;
+    arguments << "/K" << "cloudflared tunnel --config " + aa + " run " + bb;
+
+    QProcess *myProcess = new QProcess(this);
+    QString program = "cmd.exe";
+    myProcess->setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments *args) {
+        args->startupInfo->dwFlags |= STARTF_USESHOWWINDOW;
+        args->startupInfo->wShowWindow = SW_SHOWNORMAL; // 将窗口显示状态设置为正常大小
+
+        args->flags |= CREATE_NEW_CONSOLE | CREATE_NEW_PROCESS_GROUP;
+        args->startupInfo->dwFlags &= ~STARTF_USESTDHANDLES;
+        args->startupInfo->dwFlags |= STARTF_USEFILLATTRIBUTE;
+        args->startupInfo->dwFillAttribute = BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY;
+    });
+
+    myProcess->start(program, arguments);
+
+    if (!myProcess->waitForStarted()) {
+        QMessageBox::critical(this, "错误-打开cmd", "发生了错误--无法打开cmd");
+    }
 
 }
 
@@ -381,16 +431,53 @@ void MainWindow::on_open_clicked()
 
 void MainWindow::on_login_clicked()
 {
-    system("cmd /k cloudflared tunnel login");
+    QStringList arguments;
+    arguments << "/K" << "cloudflared tunnel login";
+
+    QProcess *myProcess = new QProcess(this);
+    QString program = "cmd.exe";
+    myProcess->setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments *args) {
+        args->startupInfo->dwFlags |= STARTF_USESHOWWINDOW;
+        args->startupInfo->wShowWindow = SW_SHOWNORMAL; // 将窗口显示状态设置为正常大小
+
+        args->flags |= CREATE_NEW_CONSOLE | CREATE_NEW_PROCESS_GROUP;
+        args->startupInfo->dwFlags &= ~STARTF_USESTDHANDLES;
+        args->startupInfo->dwFlags |= STARTF_USEFILLATTRIBUTE;
+        args->startupInfo->dwFillAttribute = BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY;
+    });
+
+    myProcess->start(program, arguments);
+
+    if (!myProcess->waitForStarted()) {
+        QMessageBox::critical(this, "错误-打开cmd", "发生了错误--无法打开cmd");
+    }
 }
 
 void MainWindow::on_createTunnel_clicked()
 {
     QString Tunnelname=ui->Tunnelname->text();
     ui->dnsname->setText(Tunnelname);
-    QString command = "cmd /k cloudflared tunnel create "+Tunnelname;
-    const char* commandStr = command.toStdString().c_str();
-    system(commandStr);
+
+    QStringList arguments;
+    arguments << "/K" << "cloudflared tunnel create "+Tunnelname;
+
+    QProcess *myProcess = new QProcess(this);
+    QString program = "cmd.exe";
+    myProcess->setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments *args) {
+        args->startupInfo->dwFlags |= STARTF_USESHOWWINDOW;
+        args->startupInfo->wShowWindow = SW_SHOWNORMAL; // 将窗口显示状态设置为正常大小
+
+        args->flags |= CREATE_NEW_CONSOLE | CREATE_NEW_PROCESS_GROUP;
+        args->startupInfo->dwFlags &= ~STARTF_USESTDHANDLES;
+        args->startupInfo->dwFlags |= STARTF_USEFILLATTRIBUTE;
+        args->startupInfo->dwFillAttribute = BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY;
+    });
+
+    myProcess->start(program, arguments);
+
+    if (!myProcess->waitForStarted()) {
+        QMessageBox::critical(this, "错误-打开cmd", "发生了错误--无法打开cmd");
+    }
 }
 
 
@@ -444,9 +531,26 @@ void MainWindow::on_setdns_clicked()
 {
     QString dnsname =ui->dnsname->text();
     QString dnsdomain =ui->domain->text();
-    QString command = "cmd /k cloudflared tunnel route dns "+dnsname + " " + dnsdomain;
-    const char* commandStr = command.toStdString().c_str();
-    system(commandStr);
+    QStringList arguments;
+    arguments << "/K" << "cloudflared tunnel route dns "+dnsname + " " + dnsdomain;
+
+    QProcess *myProcess = new QProcess(this);
+    QString program = "cmd.exe";
+    myProcess->setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments *args) {
+        args->startupInfo->dwFlags |= STARTF_USESHOWWINDOW;
+        args->startupInfo->wShowWindow = SW_SHOWNORMAL; // 将窗口显示状态设置为正常大小
+
+        args->flags |= CREATE_NEW_CONSOLE | CREATE_NEW_PROCESS_GROUP;
+        args->startupInfo->dwFlags &= ~STARTF_USESTDHANDLES;
+        args->startupInfo->dwFlags |= STARTF_USEFILLATTRIBUTE;
+        args->startupInfo->dwFillAttribute = BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY;
+    });
+
+    myProcess->start(program, arguments);
+
+    if (!myProcess->waitForStarted()) {
+        QMessageBox::critical(this, "错误-打开cmd", "发生了错误--无法打开cmd");
+    }
 
 }
 
@@ -468,5 +572,22 @@ void MainWindow::on_cloud_download_clicked()
 {
     QString url = "https://github.com/cloudflare/cloudflared/releases/";  // 替换为你想要打开的网址
     QDesktopServices::openUrl(QUrl(url));
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    restartApplication();
+}
+
+
+void MainWindow::on_del_clicked()
+{
+    QMessageBox::information(this, "删除", "建议先去官网看一下自己所用的Tunnel-ID，再删除多余的json");
+    QString directoryPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "//.cloudflared//"; // 指定目录路径
+
+    // 使用QDesktopServices打开文件资源管理器
+    QDesktopServices::openUrl(QUrl("file:///" + directoryPath));
+
 }
 

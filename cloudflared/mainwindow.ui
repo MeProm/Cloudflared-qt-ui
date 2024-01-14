@@ -17,6 +17,9 @@
    <iconset resource="Icon.qrc">
     <normaloff>:/new/prefix1/CF_logomark.png</normaloff>:/new/prefix1/CF_logomark.png</iconset>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="cmdg">
     <property name="geometry">
@@ -38,6 +41,9 @@
        <width>75</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>登录</string>
@@ -65,6 +71,9 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true"> border-radius: 10px; padding: 2px; border: 1px solid gray;</string>
+     </property>
     </widget>
     <widget class="QLabel" name="label_3">
      <property name="geometry">
@@ -88,6 +97,9 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true"> border-radius: 10px; padding: 2px; border: 1px solid gray;</string>
+     </property>
     </widget>
     <widget class="QLineEdit" name="domain">
      <property name="geometry">
@@ -98,6 +110,9 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true"> border-radius: 10px; padding: 2px; border: 1px solid gray;</string>
+     </property>
     </widget>
     <widget class="QPushButton" name="setdns">
      <property name="geometry">
@@ -107,6 +122,9 @@
        <width>351</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>设置</string>
@@ -151,45 +169,6 @@
     <property name="title">
      <string>yaml+ID+启动</string>
     </property>
-    <widget class="QPushButton" name="res">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>50</y>
-       <width>71</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>重置yaml</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="saveyaml">
-     <property name="geometry">
-      <rect>
-       <x>83</x>
-       <y>50</y>
-       <width>72</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>保存</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="openyaml">
-     <property name="geometry">
-      <rect>
-       <x>6</x>
-       <y>50</y>
-       <width>72</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>打开</string>
-     </property>
-    </widget>
     <widget class="QTextEdit" name="yamledit">
      <property name="geometry">
       <rect>
@@ -199,6 +178,9 @@
        <height>321</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true"> border-radius: 10px; padding: 2px; border: 1px solid gray;</string>
+     </property>
     </widget>
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
@@ -206,7 +188,7 @@
        <x>10</x>
        <y>20</y>
        <width>451</width>
-       <height>23</height>
+       <height>25</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="pp">
@@ -218,7 +200,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="path"/>
+       <widget class="QLineEdit" name="path">
+        <property name="styleSheet">
+         <string notr="true"> border-radius: 10px; padding: 2px; border: 1px solid gray;</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -230,6 +216,9 @@
        <width>75</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>启动</string>
@@ -243,6 +232,9 @@
        <width>412</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-radius: 10px; padding: 2px; border: 1px solid gray;</string>
      </property>
      <property name="text">
       <string/>
@@ -260,6 +252,62 @@
      <property name="text">
       <string>隧道ID:</string>
      </property>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>7</x>
+       <y>50</y>
+       <width>406</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="openyaml">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>打开</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="saveyaml">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>保存</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="res">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>重置yaml</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>重启程序</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="del">
+        <property name="text">
+         <string>删除多余json</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox">
@@ -283,6 +331,9 @@
        <height>23</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>进入cloudflare隧道官网</string>
      </property>
@@ -296,6 +347,9 @@
        <height>23</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>使用文档+软件下载位置</string>
      </property>
@@ -308,6 +362,9 @@
        <width>241</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>cloudflare软件下载地址</string>
@@ -324,6 +381,19 @@
      </property>
      <property name="text">
       <string>about:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>250</y>
+       <width>241</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
